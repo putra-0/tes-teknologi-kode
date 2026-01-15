@@ -12,17 +12,27 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import TaskStatusFilter from "../filters/task-status-filter";
+import CategoryListFilter from "../filters/category-list-filter";
+import IngredientListFilter from "../filters/ingredient-list-filter";
+import SearchBy, { SearchByOptions } from "@/components/filters/search-by";
 
 interface DataTableToolbarProps<TData> extends React.ComponentProps<"div"> {
   table: Table<TData>;
+  options?: SearchByOptions[];
+  isSearch?: boolean;
 }
 
 export function DataTableToolbar<TData>({
   table,
+  options,
+  isSearch,
   children,
   className,
   ...props
 }: DataTableToolbarProps<TData>) {
+  if (isSearch && !options) {
+    throw new Error("if isSearch is true, options must be defined");
+  }
   const isFiltered = table.getState().columnFilters.length > 0;
 
   const columns = React.useMemo(
@@ -30,7 +40,10 @@ export function DataTableToolbar<TData>({
     [table]
   );
 
+  const [resetSearch, setSearchReset] = React.useState(0);
+
   const onReset = React.useCallback(() => {
+    setSearchReset((prev) => prev + 1);
     table.resetColumnFilters();
   }, [table]);
 
@@ -45,6 +58,10 @@ export function DataTableToolbar<TData>({
       {...props}
     >
       <div className="flex flex-1 flex-wrap items-center gap-2">
+        {isSearch && options && (
+          <SearchBy options={options} table={table} reset={resetSearch} />
+        )}
+
         {columns.map((column) => (
           <DataTableToolbarFilter
             table={table}
@@ -162,6 +179,24 @@ function DataTableToolbarFilter<TData>({
               title={columnMeta.label ?? column.id}
             />
           );
+
+      case "categoryList":
+        return (
+          <CategoryListFilter
+            table={table}
+            column={column}
+            title={columnMeta.label ?? column.id}
+          />
+        );
+
+      case "ingredientList":
+        return (
+          <IngredientListFilter
+            table={table}
+            column={column}
+            title={columnMeta.label ?? column.id}
+          />
+        );
 
       default:
         return null;

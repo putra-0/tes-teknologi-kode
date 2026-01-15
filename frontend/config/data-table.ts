@@ -62,6 +62,8 @@ export const dataTableConfig = {
     "select",
     "multiSelect",
     "taskStatus",
+    "categoryList",
+    "ingredientList",
     "search",
   ] as const,
   operators: [

@@ -16,3 +16,13 @@ export interface TaskStatus {
   code: string;
   name: string;
 }
+
+export interface CategoryListItem {
+  uuid: string;
+  name: string;
+}
+
+export interface IngredientListItem {
+  uuid: string;
+  name: string;
+}
