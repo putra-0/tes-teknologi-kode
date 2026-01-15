@@ -30,7 +30,7 @@ class IndexRequest extends FormRequest
             $this->sort(['name', 'createdAt']),
             $this->search('name'),
             $this->category(isRequired: false),
-            $this->ingredient(isRequired: false)
+            $this->ingredient(isRequired: false, allowMultiple: true),
         );
     }
 }
