@@ -1,11 +1,28 @@
 import { DataTableColumnHeader } from "@/components/table/data-table-column-header";
 import type { ColumnDef } from "@tanstack/react-table";
 import React from "react";
+import { Ellipsis } from "lucide-react";
 
 import { formatDate } from "@/lib/format";
 import type { Recipe } from "../data/type";
+import { DataTableRowAction } from "@/types/data-table";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 
-export function getRecipeTableColumns(): ColumnDef<Recipe>[] {
+interface GetRecipeTableColumnsProps {
+  setRowAction: React.Dispatch<
+    React.SetStateAction<DataTableRowAction<Recipe> | null>
+  >;
+}
+
+export function getRecipeTableColumns({
+  setRowAction,
+}: GetRecipeTableColumnsProps): ColumnDef<Recipe>[] {
   return [
     {
       id: "name",
@@ -86,6 +103,38 @@ export function getRecipeTableColumns(): ColumnDef<Recipe>[] {
       size: 0,
       minSize: 0,
       maxSize: 0,
+    },
+    {
+      id: "actions",
+      cell: function Cell({ row }) {
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger className="min-w-8 rounded-full" asChild>
+              <Button
+                aria-label="Open menu"
+                variant="ghost"
+                className="flex size-2 p-4 m-0 justify-enddata-[state=open]:bg-muted"
+              >
+                <Ellipsis className="size-4" aria-hidden="true" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-40">
+              <DropdownMenuItem
+                onSelect={() => setRowAction({ row, variant: "update" })}
+              >
+                Edit
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onSelect={() => setRowAction({ row, variant: "delete" })}
+              >
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        );
+      },
+      minSize: 40,
+      maxSize: 40,
     },
   ];
 }
