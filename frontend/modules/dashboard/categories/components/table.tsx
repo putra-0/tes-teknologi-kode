@@ -1,0 +1,97 @@
+"use client";
+
+import { DataTable } from "@/components/table/data-table";
+import React, { useEffect } from "react";
+import { getCategoryTableColumns } from "./columns";
+import { useDataTable } from "@/hooks/use-data-table";
+import { DataTableToolbar } from "@/components/table/data-table-toolbar";
+import { DataTableRowAction } from "@/types/data-table";
+import { Category } from "../data/type";
+import { useCategories } from "../hooks/use-categories";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
+import { useAddCategory } from "../hooks/use-add-category";
+import { AddFormDialog } from "./add-form-dialog";
+// import { useUpdateCategory } from "../hooks/use-update-category";
+// import { UpdateFormDialog } from "./update-form-dialog";
+import { DeleteConfirmDialog } from "./delete-form-dialog";
+import { useDeleteCategory } from "../hooks/use-delete-category";
+
+export default function TableCategories() {
+  const { data, isLoading, isRefetching } = useCategories();
+  const { dialog, isLoading: isLoadingAdd, setDialog, onSubmit } = useAddCategory();
+  // const { isLoading: isLoadingUpdate, onUpdateSubmit } = useUpdateCategory();
+  const { isLoading: isLoadingDelete, onDeleteSubmit } = useDeleteCategory();
+
+  const [rowAction, setRowAction] =
+    React.useState<DataTableRowAction<Category> | null>(null);
+
+  const columns = getCategoryTableColumns({ setRowAction });
+  const { table } = useDataTable({
+    data: data?.items ?? [],
+    columns: columns,
+    pageCount: data?.lastPage ?? 0,
+    initialState: {
+      columnPinning: { right: ["actions"] },
+    },
+    shallow: false,
+    clearOnDefault: true,
+  });
+
+  useEffect(() => {
+    table.setGlobalFilter(isRefetching || isLoading);
+  }, [table, isRefetching, isLoading]);
+
+  return (
+    <>
+      <div className="container min-w-full mx-auto mt-3">
+        <div className="mb-5 flex flex-wrap items-center justify-between space-y-2">
+          <div>
+            <h2 className="page-header">Categories</h2>
+          </div>
+          <div className="flex gap-2">
+            <Button className="space-x-1" onClick={() => setDialog(true)}>
+              <span>Add</span> <Plus />
+            </Button>
+          </div>
+        </div>
+
+        <DataTable table={table} isLoading={isLoading}>
+          <DataTableToolbar table={table}></DataTableToolbar>
+        </DataTable>
+      </div>
+
+      <AddFormDialog
+        open={dialog}
+        isLoadingSubmit={isLoadingAdd}
+        onOpenChange={(open) => setDialog(open)}
+        onSubmit={(data, setError) =>
+          onSubmit(
+            {
+              ...data,
+            },
+            setError
+          )
+        }
+      />
+
+      {/* <UpdateFormDialog
+        currentRow={rowAction?.row.original}
+        open={rowAction?.variant === "update"}
+        isLoadingSubmit={isLoadingUpdate}
+        onOpenChange={() => setRowAction(null)}
+        onSubmit={(uuid, data, setError) =>
+          onUpdateSubmit(uuid, data, setError, () => setRowAction(null))
+        }
+      /> */}
+
+      <DeleteConfirmDialog
+        currentRow={rowAction?.row.original}
+        open={rowAction?.variant === "delete"}
+        isLoading={isLoadingDelete}
+        onOpenChange={() => setRowAction(null)}
+        onConfirm={(uuid) => onDeleteSubmit(uuid, () => setRowAction(null))}
+      />
+    </>
+  );
+}
