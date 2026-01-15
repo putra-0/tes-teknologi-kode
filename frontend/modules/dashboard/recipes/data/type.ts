@@ -8,3 +8,14 @@ export interface Recipe {
     name: string;
   };
 }
+
+export interface RecipeIngredient {
+  uuid: string;
+  name: string;
+  qty: number | null;
+  unit: string | null;
+}
+
+export interface RecipeDetail extends Recipe {
+  ingredients: RecipeIngredient[];
+}

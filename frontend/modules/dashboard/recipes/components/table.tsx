@@ -36,11 +36,7 @@ export default function TableRecipes() {
       name: rowAction?.row.original.name ?? "",
       description: rowAction?.row.original.description ?? "",
     }),
-    [
-      rowAction?.row.original.uuid,
-      rowAction?.row.original.name,
-      rowAction?.row.original.description,
-    ]
+    [rowAction?.row.original.name, rowAction?.row.original.description]
   );
 
   const options = [{ label: "Name", value: "name" }];
@@ -60,7 +56,7 @@ export default function TableRecipes() {
         ingredients: false,
       },
     },
-    shallow: false,
+    shallow: true,
     clearOnDefault: true,
   });
 

@@ -2,6 +2,7 @@ import { DataTableColumnHeader } from "@/components/table/data-table-column-head
 import type { ColumnDef } from "@tanstack/react-table";
 import React from "react";
 import { Ellipsis } from "lucide-react";
+import Link from "next/link";
 
 import { formatDate } from "@/lib/format";
 import type { Recipe } from "../data/type";
@@ -119,6 +120,9 @@ export function getRecipeTableColumns({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-40">
+              <DropdownMenuItem asChild>
+                <Link href={`/recipes/${row.original.uuid}`}>View</Link>
+              </DropdownMenuItem>
               <DropdownMenuItem
                 onSelect={() => setRowAction({ row, variant: "update" })}
               >

@@ -83,7 +83,6 @@ export function DataTableFacetedFilter<TData, TValue>({
     }
 
     debounceTimeout.current = setTimeout(() => {
-      setQuery(query);
       onSearch?.(query);
     }, 500);
 
@@ -93,10 +92,6 @@ export function DataTableFacetedFilter<TData, TValue>({
       }
     };
   }, [query, onSearch]);
-
-  React.useEffect(() => {
-    console.log("Options changed:", options);
-  }, [options]);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>

@@ -1,6 +1,6 @@
 import api from "@/lib/http";
-import { TableParams, TableResponseApi } from "@/types/api-types";
-import { Recipe } from "../data/type";
+import { ResponseApi, TableParams, TableResponseApi } from "@/types/api-types";
+import { Recipe, RecipeDetail } from "../data/type";
 
 export type RecipeIndexParams = TableParams & {
   searchBy?: string;
@@ -34,7 +34,7 @@ export const recipesService = {
   },
 
   fetchRecipe: async (uuid: string) => {
-    const { data } = await api.get(`/recipes/${uuid}`);
+    const { data } = await api.get<ResponseApi & RecipeDetail>(`/recipes/${uuid}`);
     return data;
   },
 
