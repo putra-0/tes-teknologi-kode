@@ -5,8 +5,10 @@ import { ingredientsService } from "../api/ingredient-api";
 export const useIngredients = () => {
   const { page, perPage, sort } = useParamsTable();
 
+  const sortKey = JSON.stringify(sort);
+
   return useQuery({
-    queryKey: ["ingredients", { page, perPage, sort }],
+    queryKey: ["ingredients", { page, perPage, sortKey }],
     queryFn: () =>
       ingredientsService.fetchIngredients({
         page,

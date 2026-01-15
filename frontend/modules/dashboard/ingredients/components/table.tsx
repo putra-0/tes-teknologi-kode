@@ -19,6 +19,7 @@ import { useDeleteIngredient } from "../hooks/use-delete-ingredient";
 import { getIngredientTableColumns } from "./columns";
 import { FormDialog } from "./form-dialog";
 import { DeleteConfirmDialog } from "./delete-form-dialog";
+import { DataTableSortList } from "@/components/table/data-table-sort-list";
 
 export default function TableIngredients() {
   const { data, isLoading, isRefetching } = useIngredients();
@@ -37,6 +38,7 @@ export default function TableIngredients() {
     pageCount: data?.lastPage ?? 0,
     initialState: {
       columnPinning: { right: ["actions"] },
+      sorting: [{ id: "createdAt", desc: true }],
     },
     shallow: false,
     clearOnDefault: true,
@@ -61,7 +63,9 @@ export default function TableIngredients() {
         </div>
 
         <DataTable table={table} isLoading={isLoading}>
-          <DataTableToolbar table={table}></DataTableToolbar>
+          <DataTableToolbar table={table}>
+            <DataTableSortList table={table} align="end" />
+          </DataTableToolbar>
         </DataTable>
       </div>
 

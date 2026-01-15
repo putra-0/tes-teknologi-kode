@@ -32,7 +32,7 @@ export function getIngredientTableColumns({
         <DataTableColumnHeader column={column} title="Name" />
       ),
       enableColumnFilter: false,
-      enableSorting: false,
+      enableSorting: true,
       meta: {
         label: "Name",
       },

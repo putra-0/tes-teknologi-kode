@@ -15,6 +15,7 @@ import { FormDialog } from "./form-dialog";
 import { useUpdateCategory } from "../hooks/use-update-category";
 import { DeleteConfirmDialog } from "./delete-form-dialog";
 import { useDeleteCategory } from "../hooks/use-delete-category";
+import { DataTableSortList } from "@/components/table/data-table-sort-list";
 
 export default function TableCategories() {
   const { data, isLoading, isRefetching } = useCategories();
@@ -32,6 +33,7 @@ export default function TableCategories() {
     pageCount: data?.lastPage ?? 0,
     initialState: {
       columnPinning: { right: ["actions"] },
+      sorting: [{ id: "createdAt", desc: true }],
     },
     shallow: false,
     clearOnDefault: true,
@@ -56,7 +58,9 @@ export default function TableCategories() {
         </div>
 
         <DataTable table={table} isLoading={isLoading}>
-          <DataTableToolbar table={table}></DataTableToolbar>
+          <DataTableToolbar table={table}>
+            <DataTableSortList table={table} align="end" />
+          </DataTableToolbar>
         </DataTable>
       </div>
 
