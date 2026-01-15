@@ -12,6 +12,7 @@ class IndexRequest extends FormRequest
      */
 
     use HasValidationRules;
+
     public function authorize(): bool
     {
         return true;

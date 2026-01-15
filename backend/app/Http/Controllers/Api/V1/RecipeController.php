@@ -37,7 +37,7 @@ class RecipeController extends Controller
         $sort = $request->array('sort');
 
         $recipes = Recipe::query()
-            ->with(['category', 'ingredients'])
+            ->with('category:uuid,name')
             ->when($categoryId !== null, function (Builder $query) use ($categoryId) {
                 $query->where('category_id', $categoryId);
             })
@@ -66,13 +66,7 @@ class RecipeController extends Controller
                     'uuid' => $item->category->uuid,
                     'name' => $item->category->name,
                 ],
-                'description' => $item->description,
-                'ingredients' => $item->ingredients->map(fn($ingredient) => [
-                    'uuid' => $ingredient->uuid,
-                    'name' => $ingredient->name,
-                    'qty' => $ingredient->pivot->qty,
-                    'unit' => $ingredient->pivot->unit,
-                ]),
+                'description' => $item->description
             ]);
 
         return $this->responseService->paginate($recipes);
