@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Api\V1\Category;
 
+use App\Rules\UniqueCategoryName;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -27,7 +28,7 @@ class StoreRequest extends FormRequest
                 'bail',
                 'required',
                 'string',
-                Rule::unique('categories', 'name'),
+                new UniqueCategoryName,
                 'max:100'
             ]
         ];

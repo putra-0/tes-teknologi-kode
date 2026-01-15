@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Api\V1\Category;
 
+use App\Rules\UniqueCategoryName;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -27,7 +28,7 @@ class UpdateRequest extends FormRequest
                 'bail',
                 'required',
                 'string',
-                Rule::unique('categories', 'name')->ignore($this->category),
+                new UniqueCategoryName($this->route('uuid')),
                 'max:100'
             ]
         ];
