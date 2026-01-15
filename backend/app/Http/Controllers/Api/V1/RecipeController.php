@@ -30,9 +30,14 @@ class RecipeController extends Controller
             ? Category::where('uuid', $request->input('category'))->value('id')
             : null;
 
-        $ingredientId = $request->filled('ingredient')
-            ? Ingredient::where('uuid', $request->input('ingredient'))->value('id')
-            : null;
+        $ingredientUuids = $request->array('ingredients');
+        if ($request->filled('ingredient')) {
+            $ingredientUuids[] = $request->input('ingredient');
+        }
+
+        $ingredientIds = $ingredientUuids !== []
+            ? Ingredient::whereIn('uuid', $ingredientUuids)->pluck('id')->all()
+            : [];
 
         $sort = $request->array('sort');
 
@@ -41,9 +46,9 @@ class RecipeController extends Controller
             ->when($categoryId !== null, function (Builder $query) use ($categoryId) {
                 $query->where('category_id', $categoryId);
             })
-            ->when($ingredientId !== null, function (Builder $query) use ($ingredientId) {
-                $query->whereHas('ingredients', function (Builder $query) use ($ingredientId) {
-                    $query->where('ingredient_id', $ingredientId);
+            ->when($ingredientIds !== [], function (Builder $query) use ($ingredientIds) {
+                $query->whereHas('ingredients', function (Builder $query) use ($ingredientIds) {
+                    $query->whereIn('ingredient_id', $ingredientIds);
                 });
             })
             ->when($request->filled('searchQuery'), function (Builder $query) use ($request) {
@@ -66,7 +71,8 @@ class RecipeController extends Controller
                     'uuid' => $item->category->uuid,
                     'name' => $item->category->name,
                 ],
-                'description' => $item->description
+                'description' => $item->description,
+                'createdAt' => DateHelper::formatIso($item->created_at),
             ]);
 
         return $this->responseService->paginate($recipes);
