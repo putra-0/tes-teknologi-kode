@@ -31,10 +31,6 @@ class RecipeController extends Controller
             : null;
 
         $ingredientUuids = $request->array('ingredients');
-        if ($request->filled('ingredient')) {
-            $ingredientUuids[] = $request->input('ingredient');
-        }
-
         $ingredientIds = $ingredientUuids !== []
             ? Ingredient::whereIn('uuid', $ingredientUuids)->pluck('id')->all()
             : [];
@@ -42,7 +38,7 @@ class RecipeController extends Controller
         $sort = $request->array('sort');
 
         $recipes = Recipe::query()
-            ->with('category:uuid,name')
+            ->with('category:id,uuid,name')
             ->when($categoryId !== null, function (Builder $query) use ($categoryId) {
                 $query->where('category_id', $categoryId);
             })
@@ -80,7 +76,7 @@ class RecipeController extends Controller
 
     public function show(string $uuid)
     {
-        $recipe = Recipe::with(['category', 'ingredients'])
+        $recipe = Recipe::with(['category:id,uuid,name', 'ingredients:id,uuid,name'])
             ->where('uuid', $uuid)
             ->first();
 
