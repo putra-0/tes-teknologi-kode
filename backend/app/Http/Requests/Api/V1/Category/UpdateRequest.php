@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\Api\V1\Category;
 
+use App\Models\Category;
 use App\Rules\UniqueCategoryName;
+use App\Rules\UniqueNormalized;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -28,7 +30,7 @@ class UpdateRequest extends FormRequest
                 'bail',
                 'required',
                 'string',
-                new UniqueCategoryName($this->route('uuid')),
+                new UniqueNormalized(Category::class, $this->route('uuid')),
                 'max:100'
             ]
         ];

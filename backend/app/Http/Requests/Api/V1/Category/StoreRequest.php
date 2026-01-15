@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\Api\V1\Category;
 
-use App\Rules\UniqueCategoryName;
+use App\Models\Category;
+use App\Rules\UniqueNormalized;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class StoreRequest extends FormRequest
 {
@@ -28,7 +28,7 @@ class StoreRequest extends FormRequest
                 'bail',
                 'required',
                 'string',
-                new UniqueCategoryName,
+                new UniqueNormalized(Category::class),
                 'max:100'
             ]
         ];
