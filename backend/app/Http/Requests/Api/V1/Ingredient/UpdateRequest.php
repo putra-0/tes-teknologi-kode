@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\Api\V1\Ingredient;
 
+use App\Models\Ingredient;
+use App\Rules\UniqueNormalized;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateRequest extends FormRequest
@@ -22,7 +24,14 @@ class UpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['bail', 'sometimes', 'required', 'string', 'max:100'],
+            'name' => [
+                'bail',
+                'sometimes',
+                'required',
+                'string',
+                new UniqueNormalized(Ingredient::class, $this->route('uuid')),
+                'max:100'
+            ],
         ];
     }
 }

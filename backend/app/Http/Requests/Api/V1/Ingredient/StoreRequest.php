@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\Api\V1\Ingredient;
 
+use App\Models\Ingredient;
+use App\Rules\UniqueNormalized;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreRequest extends FormRequest
@@ -22,7 +24,13 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['bail', 'required', 'string', 'max:100'],
+            'name' => [
+                'bail',
+                'required',
+                'string',
+                new UniqueNormalized(Ingredient::class),
+                'max:100'
+            ],
         ];
     }
 }
