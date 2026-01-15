@@ -1,4 +1,10 @@
-import { LayoutDashboard, LucideIcon } from "lucide-react";
+import {
+  Carrot,
+  ChefHat,
+  LayoutDashboard,
+  LucideIcon,
+  Tags,
+} from "lucide-react";
 
 export interface NavMainGroupProps {
   groups: {
@@ -41,12 +47,12 @@ export const MenuPaths: NavMainGroupProps["groups"] = [
       {
         title: "Categories",
         url: "/categories",
-        icon: LayoutDashboard,
+        icon: Tags,
       },
       {
         title: "Ingredients",
         url: "/ingredients",
-        icon: LayoutDashboard,
+        icon: Carrot,
       },
     ],
   },
@@ -57,7 +63,7 @@ export const MenuPaths: NavMainGroupProps["groups"] = [
       {
         title: "Recipes",
         url: "/recipes",
-        icon: LayoutDashboard,
+        icon: ChefHat,
       },
     ],
   },
