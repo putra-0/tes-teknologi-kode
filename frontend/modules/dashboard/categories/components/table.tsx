@@ -11,16 +11,15 @@ import { useCategories } from "../hooks/use-categories";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { useAddCategory } from "../hooks/use-add-category";
-import { AddFormDialog } from "./add-form-dialog";
-// import { useUpdateCategory } from "../hooks/use-update-category";
-// import { UpdateFormDialog } from "./update-form-dialog";
+import { FormDialog } from "./form-dialog";
+import { useUpdateCategory } from "../hooks/use-update-category";
 import { DeleteConfirmDialog } from "./delete-form-dialog";
 import { useDeleteCategory } from "../hooks/use-delete-category";
 
 export default function TableCategories() {
   const { data, isLoading, isRefetching } = useCategories();
   const { dialog, isLoading: isLoadingAdd, setDialog, onSubmit } = useAddCategory();
-  // const { isLoading: isLoadingUpdate, onUpdateSubmit } = useUpdateCategory();
+  const { isLoading: isLoadingUpdate, onUpdateSubmit } = useUpdateCategory();
   const { isLoading: isLoadingDelete, onDeleteSubmit } = useDeleteCategory();
 
   const [rowAction, setRowAction] =
@@ -61,8 +60,9 @@ export default function TableCategories() {
         </DataTable>
       </div>
 
-      <AddFormDialog
+      <FormDialog
         open={dialog}
+        mode="create"
         isLoadingSubmit={isLoadingAdd}
         onOpenChange={(open) => setDialog(open)}
         onSubmit={(data, setError) =>
@@ -75,15 +75,20 @@ export default function TableCategories() {
         }
       />
 
-      {/* <UpdateFormDialog
-        currentRow={rowAction?.row.original}
+      <FormDialog
         open={rowAction?.variant === "update"}
+        mode="edit"
+        defaultValues={{ name: rowAction?.row.original.name ?? "" }}
         isLoadingSubmit={isLoadingUpdate}
-        onOpenChange={() => setRowAction(null)}
-        onSubmit={(uuid, data, setError) =>
-          onUpdateSubmit(uuid, data, setError, () => setRowAction(null))
-        }
-      /> */}
+        onOpenChange={(open) => {
+          if (!open) setRowAction(null);
+        }}
+        onSubmit={(data, setError) => {
+          const uuid = rowAction?.row.original.uuid;
+          if (!uuid) return;
+          onUpdateSubmit(uuid, data, setError, () => setRowAction(null));
+        }}
+      />
 
       <DeleteConfirmDialog
         currentRow={rowAction?.row.original}

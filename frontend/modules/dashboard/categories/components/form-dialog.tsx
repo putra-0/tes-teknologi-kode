@@ -1,7 +1,9 @@
 "use client";
 
+import React, { useEffect, useMemo } from "react";
 import { useForm, UseFormSetError } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import z from "zod";
 
 import {
   Dialog,
@@ -22,20 +24,28 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import z from "zod";
-
 /* =======================
    Schema
 ======================= */
 export const categoryFormSchema = z.object({
-  name: z.string().min(1, "Name is required").max(100, "Name must be at most 100 characters"),
+  name: z
+    .string()
+    .min(1, "Name is required")
+    .max(100, "Name must be at most 100 characters"),
 });
 
 export type CategoryFormSchema = z.infer<typeof categoryFormSchema>;
 
+type Mode = "create" | "edit";
+
 interface Props {
   open: boolean;
+  mode?: Mode;
+  defaultValues?: Partial<CategoryFormSchema>;
   isLoadingSubmit?: boolean;
+  title?: string;
+  description?: string;
+  submitLabel?: string;
   onOpenChange: (open: boolean) => void;
   onSubmit: (
     payload: {
@@ -45,25 +55,49 @@ interface Props {
   ) => void;
 }
 
-export function AddFormDialog({
+export function FormDialog({
   open,
+  mode = "create",
+  defaultValues,
   isLoadingSubmit,
+  title,
+  description,
+  submitLabel,
   onOpenChange,
   onSubmit,
 }: Props) {
+  const resolvedDefaults = useMemo(
+    () => ({
+      name: defaultValues?.name ?? "",
+    }),
+    [defaultValues?.name]
+  );
 
   const form = useForm<CategoryFormSchema>({
     resolver: zodResolver(categoryFormSchema),
-    defaultValues: {
-      name: "",
-    },
+    defaultValues: resolvedDefaults,
   });
+
+  useEffect(() => {
+    if (open) {
+      form.reset(resolvedDefaults);
+    }
+  }, [open, resolvedDefaults, form]);
+
+  const resolvedTitle =
+    title ?? (mode === "edit" ? "Edit Category" : "Add New Category");
+  const resolvedDescription =
+    description ??
+    (mode === "edit"
+      ? "Update the category by editing the form below."
+      : "Create a new category by filling the form below.");
+  const resolvedSubmitLabel =
+    submitLabel ?? (mode === "edit" ? "Save Changes" : "Save Category");
 
   /* =======================
      Submit Handler
   ======================= */
   const handleSubmit = (values: CategoryFormSchema) => {
-
     onSubmit(
       {
         name: values.name,
@@ -76,16 +110,14 @@ export function AddFormDialog({
     <Dialog
       open={open}
       onOpenChange={(state) => {
-        if (!state) form.reset();
+        if (!state) form.reset(resolvedDefaults);
         onOpenChange(state);
       }}
     >
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>Add New Category</DialogTitle>
-          <DialogDescription>
-            Create a new category by filling the form below.
-          </DialogDescription>
+          <DialogTitle>{resolvedTitle}</DialogTitle>
+          <DialogDescription>{resolvedDescription}</DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
@@ -94,7 +126,6 @@ export function AddFormDialog({
             onSubmit={form.handleSubmit(handleSubmit)}
             className="space-y-4"
           >
-            {/* Name */}
             <FormField
               control={form.control}
               name="name"
@@ -112,12 +143,8 @@ export function AddFormDialog({
         </Form>
 
         <DialogFooter>
-          <Button
-            type="submit"
-            form="category-form"
-            disabled={isLoadingSubmit}
-          >
-            {isLoadingSubmit ? "Saving..." : "Save Category"}
+          <Button type="submit" form="category-form" disabled={isLoadingSubmit}>
+            {isLoadingSubmit ? "Saving..." : resolvedSubmitLabel}
           </Button>
         </DialogFooter>
       </DialogContent>

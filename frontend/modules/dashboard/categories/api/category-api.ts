@@ -7,7 +7,7 @@ export interface CreateCategoryPayload {
 }
 
 export interface UpdateCategoryPayload {
-  status: string;
+  name: string;
 }
 
 export const categoriesService = {
