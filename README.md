@@ -2,6 +2,12 @@
 
 This repository contains a simple recipe management application for a restaurant.
 
+## Demo
+
+<video src="./Demo.mp4" controls autoplay muted loop playsinline style="max-width: 100%; height: auto;"></video>
+
+If the video doesn’t render in your viewer, open it directly: [Demo.mp4](./Demo.mp4)
+
 **Core features**
 - Categories (food categories)
 - Ingredients (food ingredients)
