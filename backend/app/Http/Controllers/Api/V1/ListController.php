@@ -18,7 +18,9 @@ class ListController extends Controller
     {
         return $this->responseService->generate(
             code: ResponseCode::Ok,
-            data: DB::table('categories')->select('uuid', 'name')->orderBy('name')->get()->toArray()
+            data: [
+                'items' => DB::table('categories')->select('uuid', 'name')->orderBy('name')->get()->toArray()
+            ]
         );
     }
 
@@ -26,7 +28,9 @@ class ListController extends Controller
     {
         return $this->responseService->generate(
             code: ResponseCode::Ok,
-            data: DB::table('ingredients')->select('uuid', 'name')->orderBy('name')->get()->toArray()
+            data: [
+                'items' => DB::table('ingredients')->select('uuid', 'name')->orderBy('name')->get()->toArray()
+            ]
         );
     }
 }
