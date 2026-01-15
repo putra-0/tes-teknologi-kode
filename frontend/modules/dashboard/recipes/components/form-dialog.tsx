@@ -238,206 +238,207 @@ export function FormDialog({
         onOpenChange(state);
       }}
     >
-      <DialogContent className="sm:max-w-2xl">
-        <DialogHeader>
+      <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-hidden flex flex-col">
+        <DialogHeader className="shrink-0">
           <DialogTitle>{resolvedTitle}</DialogTitle>
           <DialogDescription>{resolvedDescription}</DialogDescription>
         </DialogHeader>
+        <div className="flex-1 overflow-y-auto pr-1">
+          <Form {...form}>
+            <form
+              id="recipe-form"
+              onSubmit={form.handleSubmit(handleSubmit)}
+              className="space-y-4"
+            >
+              {mode === "create" ? (
+                <FormField
+                  control={form.control}
+                  name="category"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Category</FormLabel>
+                      <FormControl>
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                          disabled={isLoadingCategories}
+                        >
+                          <SelectTrigger className="h-10">
+                            <SelectValue
+                              placeholder={
+                                isLoadingCategories
+                                  ? "Loading categories..."
+                                  : "Select category"
+                              }
+                            />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {categories.map((c) => (
+                              <SelectItem key={c.uuid} value={c.uuid}>
+                                {c.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              ) : null}
 
-        <Form {...form}>
-          <form
-            id="recipe-form"
-            onSubmit={form.handleSubmit(handleSubmit)}
-            className="space-y-4"
-          >
-            {mode === "create" ? (
               <FormField
                 control={form.control}
-                name="category"
+                name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Category</FormLabel>
+                    <FormLabel>Name</FormLabel>
                     <FormControl>
-                      <Select
-                        value={field.value}
-                        onValueChange={field.onChange}
-                        disabled={isLoadingCategories}
-                      >
-                        <SelectTrigger className="h-10">
-                          <SelectValue
-                            placeholder={
-                              isLoadingCategories
-                                ? "Loading categories..."
-                                : "Select category"
-                            }
-                          />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {categories.map((c) => (
-                            <SelectItem key={c.uuid} value={c.uuid}>
-                              {c.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      <Input placeholder="Recipe name" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-            ) : null}
 
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Recipe name" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Description</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Recipe description" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Textarea placeholder="Recipe description" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              {mode === "create" ? (
+                <>
+                  <div className="space-y-2">
+                    <FormLabel>Ingredients</FormLabel>
 
-            {mode === "create" ? (
-              <>
-                <div className="space-y-2">
-                  <FormLabel>Ingredients</FormLabel>
-
-                  <Select
-                    value={ingredientToAdd}
-                    onValueChange={(uuid) => {
-                      setIngredientToAdd(uuid);
-                      handleAddIngredient(uuid);
-                    }}
-                    disabled={isLoadingIngredients}
-                  >
-                    <SelectTrigger className="h-10">
-                      <SelectValue
-                        placeholder={
-                          isLoadingIngredients
-                            ? "Loading ingredients..."
-                            : "Add ingredient"
-                        }
-                      />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {availableIngredients.length === 0 ? (
-                        <SelectItem value="__empty" disabled>
-                          No more ingredients
-                        </SelectItem>
-                      ) : (
-                        availableIngredients.map((i) => (
-                          <SelectItem key={i.uuid} value={i.uuid}>
-                            {i.name}
+                    <Select
+                      value={ingredientToAdd}
+                      onValueChange={(uuid) => {
+                        setIngredientToAdd(uuid);
+                        handleAddIngredient(uuid);
+                      }}
+                      disabled={isLoadingIngredients}
+                    >
+                      <SelectTrigger className="h-10">
+                        <SelectValue
+                          placeholder={
+                            isLoadingIngredients
+                              ? "Loading ingredients..."
+                              : "Add ingredient"
+                          }
+                        />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {availableIngredients.length === 0 ? (
+                          <SelectItem value="__empty" disabled>
+                            No more ingredients
                           </SelectItem>
-                        ))
-                      )}
-                    </SelectContent>
-                  </Select>
+                        ) : (
+                          availableIngredients.map((i) => (
+                            <SelectItem key={i.uuid} value={i.uuid}>
+                              {i.name}
+                            </SelectItem>
+                          ))
+                        )}
+                      </SelectContent>
+                    </Select>
 
-                  {fields.length === 0 ? (
-                    <p className="text-sm text-muted-foreground">
-                      No ingredients selected.
-                    </p>
-                  ) : (
-                    <div className="space-y-2">
-                      {fields.map((f, index) => {
-                        const label =
-                          ingredients.find((it) => it.uuid === f.uuid)?.name ??
-                          f.uuid;
+                    {fields.length === 0 ? (
+                      <p className="text-sm text-muted-foreground">
+                        No ingredients selected.
+                      </p>
+                    ) : (
+                      <div className="space-y-2">
+                        {fields.map((f, index) => {
+                          const label =
+                            ingredients.find((it) => it.uuid === f.uuid)?.name ??
+                            f.uuid;
 
-                        return (
-                          <div
-                            key={f.id}
-                            className="rounded-md border p-3 space-y-2"
-                          >
-                            <div className="flex items-center justify-between gap-2">
-                              <div className="font-medium">{label}</div>
-                              <Button
-                                type="button"
-                                size="icon"
-                                variant="ghost"
-                                onClick={() => remove(index)}
-                              >
-                                <X />
-                              </Button>
+                          return (
+                            <div
+                              key={f.id}
+                              className="rounded-md border p-3 space-y-2"
+                            >
+                              <div className="flex items-center justify-between gap-2">
+                                <div className="font-medium">{label}</div>
+                                <Button
+                                  type="button"
+                                  size="icon"
+                                  variant="ghost"
+                                  onClick={() => remove(index)}
+                                >
+                                  <X />
+                                </Button>
+                              </div>
+
+                              <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+                                <FormField
+                                  control={form.control}
+                                  name={`ingredients.${index}.qty` as const}
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormLabel>Qty</FormLabel>
+                                      <FormControl>
+                                        <Input
+                                          type="number"
+                                          inputMode="decimal"
+                                          placeholder="0"
+                                          value={(field.value ?? "") as any}
+                                          onChange={(e) => {
+                                            const v = e.target.value;
+                                            field.onChange(v);
+                                          }}
+                                        />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+
+                                <FormField
+                                  control={form.control}
+                                  name={`ingredients.${index}.unit` as const}
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormLabel>Unit</FormLabel>
+                                      <FormControl>
+                                        <Input placeholder="e.g. gram" {...field} />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                              </div>
+
+                              <input type="hidden" value={f.uuid} />
                             </div>
+                          );
+                        })}
+                      </div>
+                    )}
 
-                            <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
-                              <FormField
-                                control={form.control}
-                                name={`ingredients.${index}.qty` as const}
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <FormLabel>Qty</FormLabel>
-                                    <FormControl>
-                                      <Input
-                                        type="number"
-                                        inputMode="decimal"
-                                        placeholder="0"
-                                        value={(field.value ?? "") as any}
-                                        onChange={(e) => {
-                                          const v = e.target.value;
-                                          field.onChange(v);
-                                        }}
-                                      />
-                                    </FormControl>
-                                    <FormMessage />
-                                  </FormItem>
-                                )}
-                              />
+                    {form.formState.errors.ingredients?.message ? (
+                      <p className="text-destructive text-sm">
+                        {String(form.formState.errors.ingredients.message)}
+                      </p>
+                    ) : null}
+                  </div>
+                </>
+              ) : null}
+            </form>
+          </Form>
+        </div>
 
-                              <FormField
-                                control={form.control}
-                                name={`ingredients.${index}.unit` as const}
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <FormLabel>Unit</FormLabel>
-                                    <FormControl>
-                                      <Input placeholder="e.g. gram" {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                  </FormItem>
-                                )}
-                              />
-                            </div>
-
-                            <input type="hidden" value={f.uuid} />
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )}
-
-                  {form.formState.errors.ingredients?.message ? (
-                    <p className="text-destructive text-sm">
-                      {String(form.formState.errors.ingredients.message)}
-                    </p>
-                  ) : null}
-                </div>
-              </>
-            ) : null}
-          </form>
-        </Form>
-
-        <DialogFooter>
+        <DialogFooter className="shrink-0 pt-4">
           <Button type="submit" form="recipe-form" disabled={isLoadingSubmit}>
             {isLoadingSubmit
               ? mode === "edit"
