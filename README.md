@@ -4,9 +4,15 @@ This repository contains a simple recipe management application for a restaurant
 
 ## Demo
 
-<video src="./Demo.mp4" controls autoplay muted loop playsinline style="max-width: 100%; height: auto;"></video>
+### Preview (GIF)
 
-If the video doesn’t render in your viewer, open it directly: [Demo.mp4](./Demo.mp4)
+![Demo preview](./Demo.gif)
+
+### Full video (MP4)
+
+[Demo.mp4](./Demo.mp4)
+
+Note: GitHub README won’t autoplay MP4 inline. The GIF preview above will auto-play; click the MP4 link to play the full video.
 
 **Core features**
 - Categories (food categories)
