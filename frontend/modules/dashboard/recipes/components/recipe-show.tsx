@@ -69,8 +69,7 @@ export function RecipeShow({ uuid }: { uuid: string }) {
     (a.name ?? "").localeCompare(b.name ?? "")
   );
 
-  const formatAmount = (qty: number | null, unit: string | null) => {
-    // qty null is allowed (often means “secukupnya” stored in unit)
+  const formatQty = (qty: number | null, unit: string | null) => {
     if (qty === null) return unit ?? "-";
     if (!unit) return String(qty);
     return `${qty} ${unit}`;
@@ -130,7 +129,7 @@ export function RecipeShow({ uuid }: { uuid: string }) {
                     <TableRow>
                       <TableHead className="w-12">#</TableHead>
                       <TableHead>Ingredient</TableHead>
-                      <TableHead className="w-40">Amount</TableHead>
+                      <TableHead className="w-40">Qty</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -140,7 +139,7 @@ export function RecipeShow({ uuid }: { uuid: string }) {
                         <TableCell className="font-medium">
                           {item.name}
                         </TableCell>
-                        <TableCell>{formatAmount(item.qty, item.unit)}</TableCell>
+                        <TableCell>{formatQty(item.qty, item.unit)}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
